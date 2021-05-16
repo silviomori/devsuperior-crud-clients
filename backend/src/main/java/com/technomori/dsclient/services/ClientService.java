@@ -1,9 +1,8 @@
 package com.technomori.dsclient.services;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,10 +17,9 @@ public class ClientService {
 	private ClientRepository repository;
 
 	@Transactional(readOnly = true)
-	public List<ClientDTO> findAll() {
-		List<Client> entities = repository.findAll();
-		return entities.stream().map(item -> new ClientDTO(item))
-			.collect(Collectors.toList());
+	public Page<ClientDTO> findAll(PageRequest pageRequest) {
+		Page<Client> pageEntities = repository.findAll(pageRequest);
+		return pageEntities.map(entity -> new ClientDTO(entity));
 	}
 
 }
