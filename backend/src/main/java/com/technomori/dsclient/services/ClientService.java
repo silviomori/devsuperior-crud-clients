@@ -3,6 +3,7 @@ package com.technomori.dsclient.services;
 import javax.persistence.EntityNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -52,6 +53,15 @@ public class ClientService {
 		}
 		entity = repository.save(entity);
 		return new ClientDTO(entity);
+	}
+
+	public void delete(Long id) {
+		try {
+			repository.deleteById(id);
+		} catch (EmptyResultDataAccessException e) {
+			throw new ResourceNotFoundException(
+				String.format("Client ID %d not found", id));
+		}
 	}
 
 	/**
