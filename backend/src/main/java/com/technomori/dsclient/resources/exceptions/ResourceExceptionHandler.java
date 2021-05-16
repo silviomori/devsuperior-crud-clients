@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import com.technomori.dsclient.exceptions.ResourceNotFoundException;
+
 @ControllerAdvice
 public class ResourceExceptionHandler {
 
@@ -21,6 +23,12 @@ public class ResourceExceptionHandler {
 	public ResponseEntity<StandardError> propertyReferenceException(PropertyReferenceException e,
 			HttpServletRequest request) {
 		return createStandardError(e, request, HttpStatus.BAD_REQUEST, "Property not found");
+	}
+
+	@ExceptionHandler(ResourceNotFoundException.class)
+	public ResponseEntity<StandardError> resourceNotFoundException(ResourceNotFoundException e,
+			HttpServletRequest request) {
+		return createStandardError(e, request, HttpStatus.NOT_FOUND, "Resource not found");
 	}
 
 	private ResponseEntity<StandardError> createStandardError(Exception e, HttpServletRequest request,

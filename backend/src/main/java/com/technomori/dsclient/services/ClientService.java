@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.technomori.dsclient.dto.ClientDTO;
 import com.technomori.dsclient.entities.Client;
+import com.technomori.dsclient.exceptions.ResourceNotFoundException;
 import com.technomori.dsclient.repositories.ClientRepository;
 
 @Service
@@ -20,6 +21,13 @@ public class ClientService {
 	public Page<ClientDTO> findAll(PageRequest pageRequest) {
 		Page<Client> pageEntities = repository.findAll(pageRequest);
 		return pageEntities.map(entity -> new ClientDTO(entity));
+	}
+
+	@Transactional(readOnly = true)
+	public ClientDTO findById(Long id) {
+		Client entity = repository.findById(id).orElseThrow(() -> 
+			new ResourceNotFoundException(String.format("Client %d not found", id)));
+		return new ClientDTO(entity);
 	}
 
 }
